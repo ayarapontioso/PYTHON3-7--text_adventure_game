@@ -51,7 +51,7 @@ default_death = "..........\n..........\nYour dark sign flares to life as you ar
 
 #START INVENTORY
 inventory = ["Dark Sign"]
-	#current inventory items: ""Dark Sign", "Skull Key"
+	#currently implemented inventory items: ""Dark Sign", "Skull Key"
 #END INVENTORY
 
 #stairs from the start to the great kiln.  requires glitter_glow from ke$ha's room to traverse.
@@ -144,7 +144,7 @@ def mimic_room():
 #mimic room after the mimic is moved. allows passage to bone room
 def mimic_room_moved():
 	print "There is a golden door on the eastern wall"
-	print "and mimic hanging out by the wall."
+	print "and a mimic hanging out by the wall."
 	print "(b)ack, (g)old door"
 	
 	punc = raw_input("> ").lower()
@@ -313,7 +313,7 @@ def glitter_room():
 			print inventory
 			glitter_room()
 		elif "DANCE" in next:
-			print "Ke$ha shoots glitter from every orifice"
+			print "Ke$ha shoots glitter from every pore"
 			print "She sings, 'You\'re coated in my protective love.  Good luck!'"
 			print "Your vision is clouded with pink elephants and rainicorns."
 			glitter_glow = True
