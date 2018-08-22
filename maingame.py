@@ -1,4 +1,3 @@
-#maybe saves would be good?
 # from sys import exit
 
 # import time used to delay when some lines are displayed
