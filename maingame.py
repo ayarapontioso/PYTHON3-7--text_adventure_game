@@ -66,7 +66,8 @@ def great_kiln():
 
 
 # mimic room before the mimic is moved
-def mimic_room(mimic_moved):
+def mimic_room():
+    global mimic_moved
 
     if mimic_moved is True:
         mimic_room_moved()
@@ -78,14 +79,13 @@ def mimic_room(mimic_moved):
 
         playerInput = input("> ").lower()
 
-        if "mimic" in playerInput:
+        if "mimic" in playerInput and mimic_moved is False:
             print("The mimic has moved from the door.  You can go through it now.")
             mimic_moved = True
-            mimic_room_moved(mimic_moved)
-            return mimic_moved
+            mimic_room_moved()
         elif "i" in playerInput[0]:
             print(inventory)
-            mimic_room(mimic_moved)
+            mimic_room()
         elif "b" in playerInput[0]:
             start(golem_already_entered)
         elif "treasure" in playerInput:
@@ -102,14 +102,14 @@ def mimic_room(mimic_moved):
             dead(default_death)
         else:
             print("I don't understand.")
-            mimic_room(mimic_moved)
+            mimic_room()
     else:
         print("I don't understand.")
-        mimic_room(mimic_moved)
+        mimic_room()
 
 
 # mimic room after the mimic is moved. allows passage to bone room
-def mimic_room_moved(mimic_moved):
+def mimic_room_moved():
     print("There is a golden door on the eastern wall")
     print("and mimic hanging out by the wall.")
     print("(b)ack, (g)old door")
@@ -438,12 +438,8 @@ def start(golem_already_entered):
     if "i" in playerInput[0]:
         print(inventory)
         start(golem_already_entered)
-    elif "mimic_moved" in playerInput:
-        print("mimic_moved state 2:\n")
-        print(mimic_moved)
-        start(golem_already_entered)
     elif "l" in playerInput[0]:
-        mimic_room(mimic_moved)
+        mimic_room()
     elif "r" in playerInput[0]:
         eye_room(eye_stare)
     elif "f" in playerInput[0]:
