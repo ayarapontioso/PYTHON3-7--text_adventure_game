@@ -372,7 +372,7 @@ def golem_room(golem_already_entered):
 
         playerInput = input("> ").lower()
 
-        if "rid" in playerInput[0:2]:
+        if "r" in playerInput[0]:
             riddle()
         else:
             print("It chases you down and eats you. You're still alive at the beginning.")
