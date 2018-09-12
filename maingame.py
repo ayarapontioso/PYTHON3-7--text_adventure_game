@@ -7,8 +7,6 @@ import string
 
 # makes golem room unrepeatable
 golem_already_entered = False
-# used to make the pre-search section of the skull room unrepeatable
-skull_door = False
 # makes it so the player doesn't need to unlock the skull door every time the room is entered
 skull_lock_found = False
 # makes fairy encounter unrepeatable
@@ -20,12 +18,15 @@ mimic_moved = False
 eye_stare = 0
 
 # dark sign message
-default_death = "..........\n..........\nYour dark sign flares to life as you are prevented from reaching eternal rest.\n.........."
+default_death = """..........\n
+..........\n
+Your dark sign flares to life as you are prevented from reaching eternal rest.\n
+.........."""
 
 inventory = ["Dark Sign"]
 
 
-# currently implemented inventory items: ""Dark Sign", "Skull Key", "Fairy Amulet"
+# currently implemented inventory items: ""Dark Sign", "Skull Key", "Fairy Amulet", "Dance Scroll"
 
 # stairs from the start to the great kiln.  requires glitter_glow from fairy's room to traverse.
 def ghost_stairs():
@@ -122,9 +123,9 @@ def mimic_room_moved():
     elif "b" in playerInput[0]:
         start(golem_already_entered)
     elif "d" in playerInput[0] and "Skull Key" in inventory:
-        skull_room(skull_door)
+        skull_room()
     elif "g" in playerInput[0] and "Skull Key" in inventory:
-        skull_room(skull_door)
+        skull_room()
     elif "d" in playerInput[0] and "Skull Key" not in inventory:
         print("This door requires a key\n")
         mimic_room_moved()
@@ -157,9 +158,9 @@ def skull_door_unlocked():
 
 
 # initial state of the bone room, needs to be searched
-def skull_room(skull_door):
+def skull_room():
     print("This room has thousands of skulls stacked on dusty shelves and piled on the floor.")
-    if skull_door is False:
+    if "Dance Scroll" not in inventory:
         print("You think you see something shiny out of the corner of your eye.")
         print("(b)ack")
 
@@ -167,22 +168,22 @@ def skull_room(skull_door):
 
         if "i" in playerInput[0]:
             print(inventory)
-            skull_room(skull_door)
+            skull_room()
         elif "b" in playerInput[0]:
             mimic_room()
-        elif "search" in next and skull_door is False:
+        elif "search" in playerInput and "Dance Scroll" not in inventory:
             print("After some searching you find a lock embedded within a skull.")
-            skull_door = True
-            skull_lock()
-            return skull_door
+            print("You also find a scroll with the word 'DANCE' written on it.")
+            inventory.append("Dance Scroll")
+            skull_lock(skull_lock_found)
         else:
             print("I don't understand.")
-            skull_room(skull_door)
+            skull_room()
 
-    elif skull_door is True and skull_lock is True:
+    elif "Dance Scroll" in inventory and "Skull Key" in inventory:
         skull_door_unlocked()
-    elif skull_door is True and skull_lock is False:
-        skull_lock()
+    elif "Dance Scroll" in inventory and "Skull Key" not in inventory:
+        skull_lock(skull_lock_found)
     else:
         print("program error is skull_room")
         mimic_room()
@@ -200,7 +201,7 @@ def skull_lock(skull_lock_found):
         skull_lock(skull_lock_found)
     elif "b" in playerInput[0]:
         mimic_room()
-    elif "unlock" in playerInput and skull_key in inventory:
+    elif "unlock" in playerInput and "Skull Key" in inventory:
         print("You insert the skull shaped key into the skull lock.")
         print("As soon as you turn the key the room begins to shake.")
         print("Skulls clatter to the ground revealing a large double door set within a polished bone frame.")
@@ -417,6 +418,7 @@ def riddle(golem_already_entered):
         print("The creature sighs and says, '...correct.  We tells it a secret:")
         print("the treasure's password is MIMIC'")
         print("You quickly return the way you came.")
+        inventory.append("Mimic Password")
         golem_already_entered = True
         start(golem_already_entered)
         return golem_already_entered
@@ -448,6 +450,8 @@ def start(golem_already_entered):
         ghost_stairs()
     elif "s" in playerInput[0]:
         ghost_stairs()
+    elif "cheat" in playerInput:
+        inventory.append("Skull Key")
     else:
         print("I don't understand.")
         start(golem_already_entered)
