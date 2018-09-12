@@ -165,8 +165,7 @@ def skull_door_unlocked():
 
 # initial state of the bone room, needs to be searched
 def skull_room(skull_door):
-     print("This room has thousands of skulls stacked on dusty shelves and piled on the floor.")
-
+    print("This room has thousands of skulls stacked on dusty shelves and piled on the floor.")
     if skull_door is False:
         print("You think you see something shiny out of the corner of your eye.")
         print("(b)ack")
@@ -182,6 +181,7 @@ def skull_room(skull_door):
             print("After some searching you find a lock embedded within a skull.")
             skull_door = True
             skull_lock()
+            return skull_door
         else:
             print("I don't understand.")
             skull_room(skull_door)
@@ -191,7 +191,7 @@ def skull_room(skull_door):
     elif skull_door is True and not skull_lock is True:
         skull_lock()
     else:
-        print("program error")
+        print("program error is skull_room")
         mimic_room()
 
 
