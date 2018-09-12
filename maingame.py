@@ -68,16 +68,14 @@ def great_kiln():
     print("You've entered the Kiln of the First Flame.")
     print("Will you delay the age of Dark and link the bonfires?")
 
-    punc = input("> ").lower()
-    fire_link = punc.translate(string.maketrans("", ""), string.punctuation)
-    nextStep = fire_link.split()
+    playerInput = input("> ").lower()
 
-    if "yes" in nextStep:
+    if "yes" in playerInput:
         print("In linking the fires you've condemned yourself to burn eternally...")
-        print("but at least the Dark has been prevented.")
+        print("but at least the Age of Dark has been prevented.")
         exit(0)
 
-    elif "no" in nextStep:
+    elif "no" in playerInput:
         print("Ascending to become the Dark Lord, you usher in the Age of Dark!")
         print("Good for you I guess?")
         exit(0)
