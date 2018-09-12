@@ -40,8 +40,6 @@ default_death = "..........\n..........\nYour dark sign flares to life as you ar
 
 # START INVENTORY
 inventory = ["Dark Sign"]
-
-
 # currently implemented inventory items: ""Dark Sign", "Skull Key"
 # END INVENTORY
 
@@ -145,41 +143,52 @@ def mimic_room_moved():
         mimic_room_moved()
 
 
-# initial state of the bone room, needs to be searched
-def skull_room():
-    # noinspection PyUndefined
-     skull_lock
-     skull_door
-    print("This room has thousands of skulls stacked on dusty shelves and piled on the floor.")
+# changes the state so the bone door can be used.  allows access to glitter room
+def skull_door_unlocked():
+    print("There's a bone door amid a pile of skulls.")
+    print("(b)ack, bone (d)oor")
 
-    if skull_door == False:
+    playerInput = input("> ").lower()
+
+    if "d" in playerInput[0]:
+        print("Bones crunch under your feet as you enter the bone door.")
+        glitter_room()
+    elif "i" in playerInput[0]:
+        print(inventory)
+        skull_room()
+    elif "b" in playerInput[0]:
+        mimic_room()
+    else:
+        print("I don't understand.")
+        skull_room()
+
+
+# initial state of the bone room, needs to be searched
+def skull_room(skull_door):
+     print("This room has thousands of skulls stacked on dusty shelves and piled on the floor.")
+
+    if skull_door is False:
         print("You think you see something shiny out of the corner of your eye.")
         print("(b)ack")
 
-        punc = input("> ")
-        input = punc.translate(string.maketrans("", ""), string.punctuation)
-        nextStep = input.lower()
+        playerInput = input("> ")
 
-        if "i" in nextStep:
+        if "i" in playerInput[0]:
             print(inventory)
             skull_room()
-        elif "inventory" in nextStep:
-            print(inventory)
-            skull_room()
-        elif "b" in nextStep:
+        elif "b" in playerInput[0]:
             mimic_room()
-        elif "back" in nextStep:
-            mimic_room()
-        elif "search" in next and skull_door == False:
+        elif "search" in next and skull_door is False:
             print("After some searching you find a lock embedded within a skull.")
             skull_door = True
             skull_lock()
         else:
             print("I don't understand.")
-            skull_room()
-    elif skull_door == True and skull_lock == True:
+            skull_room(skull_door)
+
+    elif skull_door is True and skull_lock is True:
         skull_door_unlocked()
-    elif skull_door == True and not skull_lock == True:
+    elif skull_door is True and not skull_lock is True:
         skull_lock()
     else:
         print("program error")
@@ -234,34 +243,6 @@ def skull_lock():
         skull_room()
 
 
-# changes the state so the bone door can be used.  allows access to glitter room
-def skull_door_unlocked():
-    print("There's a bone door amid a pile of skulls.")
-    print("(b)ack, bone (d)oor")
-
-    punc = input("> ").lower()
-    playerInput = punc.translate(string.maketrans("", ""), string.punctuation)
-    nextStep = playerInput.split()
-
-    if "door" in nextStep:
-        print("Bones crunch under your feet as you enter the bone door.")
-        glitter_room()
-    elif "d" in nextStep:
-        print("Bones crunch under your feet as you enter the bone door.")
-        glitter_room()
-    if "i" in nextStep:
-        print(inventory)
-        skull_room()
-    elif "inventory" in nextStep:
-        print(inventory)
-        skull_room()
-    elif "back" in nextStep:
-        mimic_room()
-    elif "b" in nextStep:
-        mimic_room()
-    else:
-        print("I don't understand.")
-        skull_room()
 
 
 # initial state of the glitter room.  allows player to get the glitter_glow amulet. unrepeatable.
