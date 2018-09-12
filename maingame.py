@@ -366,7 +366,7 @@ def golem_room():
     print("In this dimly lit room there is a large lake.")
     print("A hideous creature approaches you from behind.")
      golem_already_entered
-    if golem_already_entered == False:
+    if golem_already_entered is False:
         print("It screeches at you, 'IT ANSWERS THE RIDDLE OR WE EATS IT!")
         print("What do you do?")
 
