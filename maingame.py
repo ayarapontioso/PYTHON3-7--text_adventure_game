@@ -383,18 +383,16 @@ def golem_room(golem_already_entered):
         dead(default_death)
 
 
-# if the riddle is answers gives the password to the mimic room
+# if the riddle is answered gives the password to the mimic room
 def riddle():
     print("What has roots as nobody sees...")
     print("...Is taller than trees...")
     print("...Up, up it goes...")
     print("...And yet never grows?")
 
-    punc = input("> ").lower()
-    playerInput = punc.translate(string.maketrans("", ""), string.punctuation)
-    lowered_riddle_answer = playerInput.split()
+    playerInput = input("> ").lower()
 
-    if "mountain" in lowered_riddle_answer:
+    if "mountain" in playerInput:
         print(".")
         time.sleep(1)
         print("..")
@@ -404,9 +402,9 @@ def riddle():
         print("The creature sighs and says, '...correct.  We tells it a secret:")
         print("the treasure's password is MIMIC'")
         print("You quickly return the way you came.")
-         golem_already_entered
         golem_already_entered = True
         start()
+        return golem_already_entered
 
     else:
         print("It screeches, 'Wrong!  NOW WE EATS IT!'")
