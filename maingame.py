@@ -86,45 +86,37 @@ def great_kiln():
 
 
 # mimic room before the mimic is moved
-def mimic_room():
-     mimic_moved
+def mimic_room(mimic_moved):
 
-    if mimic_moved == True:
+    if mimic_moved is True:
         mimic_room_moved()
-    elif mimic_moved == False:
+    elif mimic_moved is False:
         print("There is a treasure chest.")
         print("It undoubtedly contains treasure.")
         print("The chest is blocking a golden door.")
         print("(b)ack")
 
-        punc = input("> ").lower()
-        input = punc.translate(string.maketrans("", ""), string.punctuation)
-        nextStep = input.lower()
+        playerInput = input("> ").lower()
 
         if "mimic" in next and not mimic_moved == True:
             print("The mimic has moved from the door.  You can go through it now.")
             mimic_moved = True
             mimic_room_moved()
             return mimic_moved
-        elif "i" in nextStep:
+        elif "i" in playerInput[0]:
             print(inventory)
             mimic_room()
-        elif "inventory" in nextStep:
-            print(inventory)
-            mimic_room()
-        elif "back" in nextStep:
+        elif "b" in playerInput[0]:
             start()
-        elif "b" in nextStep:
-            start()
-        elif "treasure" in nextStep:
+        elif "treasure" in playerInput:
             print("Upon touching the treasure chest, you discover that it's a mimic.")
             print("Before you have a chance to react it devours you whole.")
             dead(default_death)
-        elif "chest" in nextStep:
+        elif "chest" in playerInput:
             print("Upon touching the treasure chest, you discover that it's a mimic.")
             print("Before you have a chance to react it devours you whole.")
             dead(default_death)
-        elif "door" in nextStep:
+        elif "door" in playerInput:
             print("Upon touching the treasure chest, you discover that it's a mimic.")
             print("Before you have a chance to react it devours you whole.")
             dead(default_death)
