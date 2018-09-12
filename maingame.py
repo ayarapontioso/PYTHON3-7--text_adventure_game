@@ -5,21 +5,14 @@ import time
 # import string used to strip out punctuation
 import string
 
-# START S
-
 # makes golem room unrepeatable
 golem_already_entered = False
-
 # used to make the pre-search section of the skull room unrepeatable
 skull_door = False
 # makes it so the player doesn't need to unlock the skull door every time the room is entered
 skull_lock_found = False
-# allows the player to unlock the skull door
-skull_key = False
-
 # makes fairy encounter unrepeatable
 fairy = True
-
 # moves mimic away from the gold door in the mimic room, makes encounter unrepeatable
 mimic_moved = False
 
@@ -28,10 +21,8 @@ mimic_moved = False
 default_death = "..........\n..........\nYour dark sign flares to life as you are prevented from reaching eternal rest.\n.........."
 
 
-# START INVENTORY
 inventory = ["Dark Sign"]
-# currently implemented inventory items: ""Dark Sign", "Skull Key"
-# END INVENTORY
+# currently implemented inventory items: ""Dark Sign", "Skull Key", "Fairy Amulet"
 
 # stairs from the start to the great kiln.  requires glitter_glow from fairy's room to traverse.
 def ghost_stairs():
@@ -184,7 +175,7 @@ def skull_room(skull_door):
         print("program error is skull_room")
         mimic_room()
 
-# after searching the skull room, this is the provided state.  can unlock the door if skull_key is True
+# after searching the skull room, this is the provided state.  can unlock the door if "Skull Key" is in inventory
 def skull_lock(skull_lock_found):
     print("You see a lock recessed in an ivory skull.")
     print("(b)ack")
@@ -276,7 +267,7 @@ def glitter_room(fairy):
 def eye_room():
     eye_insanity = 0 # used to track insanity from performing non-stare related actions in the eye room
 
-    if skull_key not in inventory:
+    if "Skull Key" not in inventory:
         print("Upon entering the room you see a giant, pulsating eye.")
         print("As it turns its gaze upon you, your mind starts to unravel.")
         print("(b)ack, (i)nventory?")
@@ -300,7 +291,7 @@ def eye_room():
         else:
             eye_insanity += 1
             eye_room()
-    elif skull_key in inventory:
+    elif "Skull Key" in inventory:
         print("This room is a dead end, so you head back.")
         start()
     else:
@@ -308,9 +299,9 @@ def eye_room():
         start()
 
 
-# has insanity counter and a stare counter.  can set skull_key == True and appends it to the player's inventory
+# has insanity counter and a stare counter.  can append "Skull Key" to the player's inventory
 def stare_down():
-     eye_stare
+    eye_stare = 0
     print("You stare back defiantly, refusing to bend your gaze.")
     if eye_stare <= 0:
         print("You feel yourself slipping into nothingness...")
@@ -318,24 +309,16 @@ def stare_down():
         time.sleep(3)
         print("Stare or flee?")
 
-        punc = input("> ").lower()
-        playerInput = punc.translate(string.maketrans("", ""), string.punctuation)
-        nextStep = playerInput.split()
+        playerInput = input("> ")
 
-        if "stare" in nextStep:
+        if "star" in playerInput[0:3]:
             eye_stare += 1
             stare_down()
-        elif "staring" in nextStep:
-            eye_stare += 1
-            stare_down()
-        elif "flee" in nextStep:
+        elif "flee" in playerInput:
             print("You flee back the way you came.")
             start()
-        elif "b" in nextStep:
+        elif "b" in playerInput[0]:
             print("You head back the way you came.")
-        elif "back" in nextStep:
-            "You head back the way you came."
-            start()
         else:
             "Stare or flee?"
             stare_down()
@@ -345,24 +328,16 @@ def stare_down():
         time.sleep(3)
         print("Stare or flee?")
 
-        punc = input("> ").lower()
-        playerInput = punc.translate(string.maketrans("", ""), string.punctuation)
-        nextStep = playerInput.split()
+        playerInput = input("> ")
 
-        if "stare" in nextStep:
+        if "star" in playerInput[0:3]:
             eye_stare += 1
             stare_down()
-        elif "staring" in nextStep:
-            eye_stare += 1
-            stare_down()
-        elif "flee" in nextStep:
+        elif "flee" in playerInput:
             print("You flee back the way you came.")
             start()
-        elif "b" in nextStep:
+        elif "b" in playerInput[0]:
             print("You head back the way you came.")
-        elif "back" in nextStep:
-            print("You head back the way you came.")
-            start()
         else:
             print("Stare or flee?")
             stare_down()
@@ -372,9 +347,7 @@ def stare_down():
         time.sleep(1)
         print("You find a skull shaped key!")
         print("This room is a dead end, so you head back.")
-         skull_key
         inventory.append("Skull Key")
-        skull_key = True
         start()
     else:
         print("How did you get this error in the eye room at the stare down?")
