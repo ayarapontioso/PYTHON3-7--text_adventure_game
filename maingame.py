@@ -362,19 +362,17 @@ def dead(default_death):
 
 
 # causes death on re-entry after riddle completed. passes to riddle
-def golem_room():
+def golem_room(golem_already_entered):
     print("In this dimly lit room there is a large lake.")
     print("A hideous creature approaches you from behind.")
-     golem_already_entered
+
     if golem_already_entered is False:
         print("It screeches at you, 'IT ANSWERS THE RIDDLE OR WE EATS IT!")
         print("What do you do?")
 
-        punc = input("> ").lower()
-        playerInput = punc.translate(string.maketrans("", ""), string.punctuation)
-        nextStep = playerInput.split()
+        playerInput = input("> ").lower()
 
-        if "riddle" in nextStep:
+        if "rid" in playerInput[0:2]:
             riddle()
         else:
             print("It chases you down and eats you. You're still alive at the beginning.")
