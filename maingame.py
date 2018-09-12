@@ -414,9 +414,9 @@ def riddle():
 
 # starting area.  links eye, mimic, and golem rooms.  allows access to ghost stairs.  player returns here on death.
 def start():
-    print("""You are in a dark room.\n
-    There is are doors to your right, left, and forward, as well as stairs leading down.\n
-    (l)eft, (f)orward, (r)ight, (s)tairs, (i)nventory?""")
+    print("You are in a dark room.")
+    print("There is are doors to your right, left, and forward, as well as stairs leading down.")
+    print("(l)eft, (f)orward, (r)ight, (s)tairs, (i)nventory?")
 
     playerInput = input("> ").lower()
 
