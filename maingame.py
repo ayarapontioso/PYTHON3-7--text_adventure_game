@@ -224,33 +224,26 @@ def skull_lock(skull_lock_found):
         skull_room()
     elif skull_key == True and next != "unlock":
         print("Do something with the key?")
-        skull_lock()
+        skull_lock(skull_lock_found)
     elif skull_key == False and next != "unlock":
         print("I don't understand.")
-        skull_lock()
+        skull_lock(skull_lock_found)
     else:
         print("How did you get this error at the skull_lock?")
         skull_room()
 
-
-
-
 # initial state of the glitter room.  allows player to get the glitter_glow amulet. unrepeatable.
-def glitter_room():
+def glitter_room(fairy):
     print("You enter a room filled with glowing pink crystals.")
     print("Sliver and gold glitter rains continuously from the ceiling.")
-     glitter_glow
-     fairy
 
-    if fairy == True:
+    if fairy is True:
         print("A glowing fairy floats over head.")
         print("As you turn to look at her, she sings out:")
         print("What is movement for the sake of joy?")
 
-        punc = input("> ")
-        playerInput = punc.translate(string.maketrans("", ""), string.punctuation)
-        nextStep = playerInput.upper()
-        uppercaseList = [nextStep[0:4]]
+        playerInput = input("> ").lower()
+        uppercaseList = [playerInput[0:4]]
 
         if "I" in uppercaseList:
             print(inventory)
@@ -258,8 +251,9 @@ def glitter_room():
         elif "DANC" in uppercaseList:
             print("The fairy shoots pink glitter from every pore")
             print("She sings, 'You\'re shielded by my protective love.  Good luck!'")
+            print("You receive a magical amulet!")
             print("Your vision is clouded with sparkling magic you cannot comprehend.")
-            glitter_glow = True
+            inventory.append("Fairy Amulet")
             print("******")
             time.sleep(1)
             print("******")
@@ -269,18 +263,13 @@ def glitter_room():
             print("fairy sighs and quietly sings, '...so often disappointed'")
             print("She swoops down and splits your head open with her eye lasers.")
             dead(default_death)
-    elif fairy == False:
+    elif fairy is False:
         print("The room is empty")
         print("(b)ack")
 
-        punc = input("> ")
-        playerInput = punc.translate(string.maketrans("", ""), string.punctuation)
-        nextStep = playerInput.lower()
+        playerInput = input("> ")
 
-        if "b" in nextStep:
-            print("You head back.")
-            skull_room()
-        elif "back" in nextStep:
+        if "b" in playerInput[0]:
             print("You head back.")
             skull_room()
         else:
