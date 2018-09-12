@@ -37,7 +37,6 @@ skull_lock = False
 # dark sign message
 default_death = "..........\n..........\nYour dark sign flares to life as you are prevented from reaching eternal rest.\n.........."
 
-# END S
 
 # START INVENTORY
 inventory = ["Dark Sign"]
@@ -61,8 +60,6 @@ def ghost_stairs():
         print("They tear you limb from limb.")
         dead(default_death)
 
-
-
 # final room, ends game
 def great_kiln():
     print("You've entered the Kiln of the First Flame.")
@@ -83,7 +80,6 @@ def great_kiln():
     else:
         print("I don't understand")
         great_kiln()
-
 
 # mimic room before the mimic is moved
 def mimic_room(mimic_moved):
@@ -127,38 +123,22 @@ def mimic_room(mimic_moved):
         print("I don't understand.")
         mimic_room()
 
-
 # mimic room after the mimic is moved. allows passage to bone room
 def mimic_room_moved():
     print("There is a golden door on the eastern wall")
     print("and mimic hanging out by the wall.")
     print("(b)ack, (g)old door")
 
-    punc = input("> ").lower()
-    playerInput = punc.translate(string.maketrans("", ""), string.punctuation)
-    nextStep = playerInput.split()
+    playerInput = input("> ").lower()
 
-    if "i" in nextStep:
+    if "i" in playerInput[0]:
         print(inventory)
         mimic_room_moved()
-    elif "inventory" in nextStep:
-        print(inventory)
-        mimic_room_moved()
-    elif "back" in nextStep:
+    elif "b" in playerInput[0]:
         start()
-    elif "b" in nextStep:
-        start()
-    elif "door" in next and mimic_moved:
+    elif "d" in playerInput[0] and mimic_moved:
         skull_room()
-    elif "d" in next and mimic_moved:
-        skull_room()
-    elif "gold" in next and mimic_moved:
-        skull_room()
-    elif "golden" in next and mimic_moved:
-        skull_room()
-    elif "g" in next and mimic_moved:
-        skull_room()
-    elif "door" in next and mimic_moved:
+    elif "g" in playerInput[0] and mimic_moved:
         skull_room()
     else:
         print("I don't understand.")
