@@ -424,11 +424,11 @@ def start():
         print(inventory)
         start()
     elif "l" in playerInput[0]:
-        mimic_room()
+        mimic_room(mimic_moved)
     elif "r" in playerInput[0]:
         eye_room()
     elif "f" in playerInput[0]:
-        golem_room()
+        golem_room(golem_already_entered)
     elif "d" in playerInput[0]:
         ghost_stairs()
     elif "s" in playerInput[0]:
