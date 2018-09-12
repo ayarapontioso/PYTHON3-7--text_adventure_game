@@ -15,6 +15,8 @@ skull_lock_found = False
 fairy = True
 # moves mimic away from the gold door in the mimic room, makes encounter unrepeatable
 mimic_moved = False
+# used in giant eye puzzle in stare_down
+eye_stare = 0
 
 
 # dark sign message
@@ -29,7 +31,7 @@ def ghost_stairs():
     print("Stairs wind down as far as you can see.")
     print("Suddenly, everything is illuminated by an ethereal light.")
 
-    if "Fairy Amulet"  in inventory:
+    if "Fairy Amulet" in inventory:
         print("Ghosts rush towards you, but are repelled by")
         print("* ~ ~ ~ fairy's Blessing ~ ~ ~*")
         great_kiln()
@@ -123,7 +125,6 @@ def mimic_room_moved():
         print("I don't understand.")
         mimic_room_moved()
 
-
 # changes the state so the bone door can be used.  allows access to glitter room
 def skull_door_unlocked():
     print("There's a bone door amid a pile of skulls.")
@@ -151,7 +152,7 @@ def skull_room(skull_door):
         print("You think you see something shiny out of the corner of your eye.")
         print("(b)ack")
 
-        playerInput = input("> ")
+        playerInput = input("> ").lower()
 
         if "i" in playerInput[0]:
             print(inventory)
@@ -169,7 +170,7 @@ def skull_room(skull_door):
 
     elif skull_door is True and skull_lock is True:
         skull_door_unlocked()
-    elif skull_door is True and not skull_lock is True:
+    elif skull_door is True and skull_lock is False:
         skull_lock()
     else:
         print("program error is skull_room")
@@ -180,7 +181,7 @@ def skull_lock(skull_lock_found):
     print("You see a lock recessed in an ivory skull.")
     print("(b)ack")
 
-    playerInput = input("> ")
+    playerInput = input("> ").lower()
 
     if "i" in playerInput[0]:
         print(inventory)
@@ -249,7 +250,7 @@ def glitter_room(fairy):
         print("The room is empty")
         print("(b)ack")
 
-        playerInput = input("> ")
+        playerInput = input("> ").lower()
 
         if "b" in playerInput[0]:
             print("You head back.")
@@ -264,7 +265,7 @@ def glitter_room(fairy):
 
 
 # has an insanity counter. passes to stare_down.
-def eye_room():
+def eye_room(eye_stare):
     eye_insanity = 0 # used to track insanity from performing non-stare related actions in the eye room
 
     if "Skull Key" not in inventory:
@@ -277,13 +278,13 @@ def eye_room():
         if "i" in playerInput[0]:
             print(inventory)
             eye_insanity - + 1
-            eye_room()
+            eye_room(eye_stare)
         elif "f" in playerInput[0]:
             start()
         elif "b" in playerInput[0]:
             start()
         elif "stare" in playerInput:
-            stare_down()
+            stare_down(eye_stare)
         elif eye_insanity >= 3:
             print("The eye's intense gaze completely destabilizes your mind, disabling all body functions.")
             print("After what seems like an eternity you suffocate to death.")
@@ -300,8 +301,7 @@ def eye_room():
 
 
 # has insanity counter and a stare counter.  can append "Skull Key" to the player's inventory
-def stare_down():
-    eye_stare = 0
+def stare_down(eye_stare):
     print("You stare back defiantly, refusing to bend your gaze.")
     if eye_stare <= 0:
         print("You feel yourself slipping into nothingness...")
@@ -309,11 +309,12 @@ def stare_down():
         time.sleep(3)
         print("Stare or flee?")
 
-        playerInput = input("> ")
+        playerInput = input("> ").lower()
 
-        if "star" in playerInput[0:3]:
+        if "stare" in playerInput:
             eye_stare += 1
-            stare_down()
+            stare_down(eye_stare)
+            return eye_stare
         elif "flee" in playerInput:
             print("You flee back the way you came.")
             start()
@@ -328,11 +329,12 @@ def stare_down():
         time.sleep(3)
         print("Stare or flee?")
 
-        playerInput = input("> ")
+        playerInput = input("> ").lower()
 
-        if "star" in playerInput[0:3]:
+        if "stare" in playerInput:
             eye_stare += 1
-            stare_down()
+            stare_down(eye_stare)
+            return eye_stare
         elif "flee" in playerInput:
             print("You flee back the way you came.")
             start()
@@ -426,7 +428,7 @@ def start():
     elif "l" in playerInput[0]:
         mimic_room(mimic_moved)
     elif "r" in playerInput[0]:
-        eye_room()
+        eye_room(eye_stare)
     elif "f" in playerInput[0]:
         golem_room(golem_already_entered)
     elif "d" in playerInput[0]:
