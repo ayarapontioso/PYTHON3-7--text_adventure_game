@@ -10,9 +10,6 @@ import string
 # makes golem room unrepeatable
 golem_already_entered = False
 
-# allows the player to unlock the skull door
-skull_key = False
-
 # used to track the staring contest
 eye_stare = 0
 
@@ -21,6 +18,10 @@ eye_insanity = 0
 
 # used to make the pre-search section of the skull room unrepeatable
 skull_door = False
+# makes it so the player doesn't need to unlock the skull door every time the room is entered
+skull_lock_found = False
+# allows the player to unlock the skull door
+skull_key = False
 
 # applies protection from the stair ghosts
 glitter_amulet = False
@@ -31,8 +32,6 @@ fairy = True
 # moves mimic away from the gold door in the mimic room, makes encounter unrepeatable
 mimic_moved = False
 
-# makes it so the player doesn't need to unlock the skull door every time the room is entered
-skull_lock = False
 
 # dark sign message
 default_death = "..........\n..........\nYour dark sign flares to life as you are prevented from reaching eternal rest.\n.........."
@@ -174,7 +173,7 @@ def skull_room(skull_door):
 
         if "i" in playerInput[0]:
             print(inventory)
-            skull_room()
+            skull_room(skull_door)
         elif "b" in playerInput[0]:
             mimic_room()
         elif "search" in next and skull_door is False:
@@ -194,42 +193,33 @@ def skull_room(skull_door):
         print("program error is skull_room")
         mimic_room()
 
-
-# after searching the skull room, this is the provided state.  can unlock the door if skull_key == True
-# noinspection PyUndefined
-def skull_lock():
-     skull_lock
-
+# after searching the skull room, this is the provided state.  can unlock the door if skull_key is True
+def skull_lock(skull_lock_found):
     print("You see a lock recessed in an ivory skull.")
     print("(b)ack")
 
-    punc = input("> ")
-    input = punc.translate(string.maketrans("", ""), string.punctuation)
-    nextStep = input.lower()
+    playerInput = input("> ")
 
-    if "i" in nextStep:
+    if "i" in playerInput[0]:
         print(inventory)
-        skull_lock()
-    elif "inventory" in nextStep:
-        print(inventory)
-        skull_lock()
-    elif "b" in nextStep:
+        skull_lock(skull_lock_found)
+    elif "b" in playerInput[0]:
         mimic_room()
-    elif "back" in nextStep:
-        mimic_room()
-    elif "unlock" in next and skull_key == True:
+    elif "unlock" in playerInput and skull_key in inventory:
         print("You insert the skull shaped key into the skull lock.")
         print("As soon as you turn the key the room begins to shake.")
         print("Skulls clatter to the ground revealing a large double door set within a polished bone frame.")
         skull_lock = True
         skull_door_unlocked()
+        return skull_lock
     elif "key" in next and skull_key == True:
         print("You insert the skull shaped key into the skull lock.")
         print("As soon as you turn the key the room begins to shake.")
         print("Skulls clatter to the ground revealing a large double door set within a polished bone frame.")
         skull_lock = True
         skull_door_unlocked()
-    elif "unlock" in next and skull_key == False:
+        return skull_lock
+    elif "unlock" in next and skull_key not in inventory:
         print("You need the right key for this lock.")
         skull_room()
     elif skull_key == True and next != "unlock":
