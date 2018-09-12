@@ -14,16 +14,17 @@ skull_lock_found = False
 # makes fairy encounter unrepeatable
 fairy = True
 # moves mimic away from the gold door in the mimic room, makes encounter unrepeatable
+global mimic_moved
 mimic_moved = False
 # used in giant eye puzzle in stare_down
 eye_stare = 0
 
-
 # dark sign message
 default_death = "..........\n..........\nYour dark sign flares to life as you are prevented from reaching eternal rest.\n.........."
 
-
 inventory = ["Dark Sign"]
+
+
 # currently implemented inventory items: ""Dark Sign", "Skull Key", "Fairy Amulet"
 
 # stairs from the start to the great kiln.  requires glitter_glow from fairy's room to traverse.
@@ -40,6 +41,7 @@ def ghost_stairs():
         print("You are swarmed by vengeful ghosts")
         print("They tear you limb from limb.")
         dead(default_death)
+
 
 # final room, ends game
 def great_kiln():
@@ -62,8 +64,10 @@ def great_kiln():
         print("I don't understand")
         great_kiln()
 
+
 # mimic room before the mimic is moved
-def mimic_room(mimic_moved):
+def mimic_room():
+    global mimic_moved
 
     if mimic_moved is True:
         mimic_room_moved()
@@ -75,11 +79,10 @@ def mimic_room(mimic_moved):
 
         playerInput = input("> ").lower()
 
-        if "mimic" in next and not mimic_moved == True:
+        if "mimic" in playerInput and mimic_moved is False:
             print("The mimic has moved from the door.  You can go through it now.")
             mimic_moved = True
             mimic_room_moved()
-            return mimic_moved
         elif "i" in playerInput[0]:
             print(inventory)
             mimic_room()
@@ -104,6 +107,7 @@ def mimic_room(mimic_moved):
         print("I don't understand.")
         mimic_room()
 
+
 # mimic room after the mimic is moved. allows passage to bone room
 def mimic_room_moved():
     print("There is a golden door on the eastern wall")
@@ -117,13 +121,20 @@ def mimic_room_moved():
         mimic_room_moved()
     elif "b" in playerInput[0]:
         start(golem_already_entered)
-    elif "d" in playerInput[0] and mimic_moved:
-        skull_room()
-    elif "g" in playerInput[0] and mimic_moved:
-        skull_room()
+    elif "d" in playerInput[0] and "Skull Key" in inventory:
+        skull_room(skull_door)
+    elif "g" in playerInput[0] and "Skull Key" in inventory:
+        skull_room(skull_door)
+    elif "d" in playerInput[0] and "Skull Key" not in inventory:
+        print("This door requires a key\n")
+        mimic_room_moved()
+    elif "g" in playerInput[0] and "Skull Key" not in inventory:
+        print("This door requires a key\n")
+        mimic_room_moved()
     else:
         print("I don't understand.")
         mimic_room_moved()
+
 
 # changes the state so the bone door can be used.  allows access to glitter room
 def skull_door_unlocked():
@@ -176,6 +187,7 @@ def skull_room(skull_door):
         print("program error is skull_room")
         mimic_room()
 
+
 # after searching the skull room, this is the provided state.  can unlock the door if "Skull Key" is in inventory
 def skull_lock(skull_lock_found):
     print("You see a lock recessed in an ivory skull.")
@@ -214,6 +226,7 @@ def skull_lock(skull_lock_found):
     else:
         print("How did you get this error at the skull_lock?")
         skull_room()
+
 
 # initial state of the glitter room.  allows player to get the glitter_glow amulet. unrepeatable.
 def glitter_room(fairy):
@@ -266,7 +279,7 @@ def glitter_room(fairy):
 
 # has an insanity counter. passes to stare_down.
 def eye_room(eye_stare):
-    eye_insanity = 0 # used to track insanity from performing non-stare related actions in the eye room
+    eye_insanity = 0  # used to track insanity from performing non-stare related actions in the eye room
 
     if "Skull Key" not in inventory:
         print("Upon entering the room you see a giant, pulsating eye.")
@@ -426,7 +439,7 @@ def start(golem_already_entered):
         print(inventory)
         start(golem_already_entered)
     elif "l" in playerInput[0]:
-        mimic_room(mimic_moved)
+        mimic_room()
     elif "r" in playerInput[0]:
         eye_room(eye_stare)
     elif "f" in playerInput[0]:
