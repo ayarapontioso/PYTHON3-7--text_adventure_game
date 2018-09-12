@@ -84,7 +84,7 @@ def mimic_room(mimic_moved):
             print(inventory)
             mimic_room()
         elif "b" in playerInput[0]:
-            start()
+            start(golem_already_entered)
         elif "treasure" in playerInput:
             print("Upon touching the treasure chest, you discover that it's a mimic.")
             print("Before you have a chance to react it devours you whole.")
@@ -116,7 +116,7 @@ def mimic_room_moved():
         print(inventory)
         mimic_room_moved()
     elif "b" in playerInput[0]:
-        start()
+        start(golem_already_entered)
     elif "d" in playerInput[0] and mimic_moved:
         skull_room()
     elif "g" in playerInput[0] and mimic_moved:
@@ -241,7 +241,7 @@ def glitter_room(fairy):
             time.sleep(1)
             print("******")
             fairy = False
-            start()
+            start(golem_already_entered)
         elif uppercaseList != "DANC":
             print("fairy sighs and quietly sings, '...so often disappointed'")
             print("She swoops down and splits your head open with her eye lasers.")
@@ -280,9 +280,9 @@ def eye_room(eye_stare):
             eye_insanity - + 1
             eye_room(eye_stare)
         elif "f" in playerInput[0]:
-            start()
+            start(golem_already_entered)
         elif "b" in playerInput[0]:
-            start()
+            start(golem_already_entered)
         elif "stare" in playerInput:
             stare_down(eye_stare)
         elif eye_insanity >= 3:
@@ -294,10 +294,10 @@ def eye_room(eye_stare):
             eye_room()
     elif "Skull Key" in inventory:
         print("This room is a dead end, so you head back.")
-        start()
+        start(golem_already_entered)
     else:
         print("How did you get this error entering the eye room?")
-        start()
+        start(golem_already_entered)
 
 
 # has insanity counter and a stare counter.  can append "Skull Key" to the player's inventory
@@ -317,7 +317,7 @@ def stare_down(eye_stare):
             return eye_stare
         elif "flee" in playerInput:
             print("You flee back the way you came.")
-            start()
+            start(golem_already_entered)
         elif "b" in playerInput[0]:
             print("You head back the way you came.")
         else:
@@ -337,7 +337,7 @@ def stare_down(eye_stare):
             return eye_stare
         elif "flee" in playerInput:
             print("You flee back the way you came.")
-            start()
+            start(golem_already_entered)
         elif "b" in playerInput[0]:
             print("You head back the way you came.")
         else:
@@ -350,17 +350,17 @@ def stare_down(eye_stare):
         print("You find a skull shaped key!")
         print("This room is a dead end, so you head back.")
         inventory.append("Skull Key")
-        start()
+        start(golem_already_entered)
     else:
         print("How did you get this error in the eye room at the stare down?")
-        start()
+        start(golem_already_entered)
 
 
 # handles player death
 def dead(default_death):
     time.sleep(3)
     print(default_death)
-    start()
+    start(golem_already_entered)
 
 
 # causes death on re-entry after riddle completed. passes to riddle
@@ -375,7 +375,7 @@ def golem_room(golem_already_entered):
         playerInput = input("> ").lower()
 
         if "r" in playerInput[0]:
-            riddle()
+            riddle(golem_already_entered)
         else:
             print("It chases you down and eats you. You're still alive at the beginning.")
             dead(default_death)
@@ -386,7 +386,7 @@ def golem_room(golem_already_entered):
 
 
 # if the riddle is answered gives the password to the mimic room
-def riddle():
+def riddle(golem_already_entered):
     print("What has roots as nobody sees...")
     print("...Is taller than trees...")
     print("...Up, up it goes...")
@@ -405,7 +405,7 @@ def riddle():
         print("the treasure's password is MIMIC'")
         print("You quickly return the way you came.")
         golem_already_entered = True
-        start()
+        start(golem_already_entered)
         return golem_already_entered
 
     else:
@@ -415,7 +415,7 @@ def riddle():
 
 
 # starting area.  links eye, mimic, and golem rooms.  allows access to ghost stairs.  player returns here on death.
-def start():
+def start(golem_already_entered):
     print("You are in a dark room.")
     print("There is are doors to your right, left, and forward, as well as stairs leading down.")
     print("(l)eft, (f)orward, (r)ight, (s)tairs, (i)nventory?")
@@ -424,7 +424,7 @@ def start():
 
     if "i" in playerInput[0]:
         print(inventory)
-        start()
+        start(golem_already_entered)
     elif "l" in playerInput[0]:
         mimic_room(mimic_moved)
     elif "r" in playerInput[0]:
@@ -437,7 +437,7 @@ def start():
         ghost_stairs()
     else:
         print("I don't understand.")
-        start()
+        start(golem_already_entered)
 
 
-start()
+start(golem_already_entered)
