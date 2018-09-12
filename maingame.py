@@ -10,21 +10,12 @@ import string
 # makes golem room unrepeatable
 golem_already_entered = False
 
-# used to track the staring contest
-eye_stare = 0
-
-# used to track insanity from performing non-stare related actions in the eye room
-eye_insanity = 0
-
 # used to make the pre-search section of the skull room unrepeatable
 skull_door = False
 # makes it so the player doesn't need to unlock the skull door every time the room is entered
 skull_lock_found = False
 # allows the player to unlock the skull door
 skull_key = False
-
-# applies protection from the stair ghosts
-glitter_amulet = False
 
 # makes fairy encounter unrepeatable
 fairy = True
@@ -283,36 +274,24 @@ def glitter_room(fairy):
 
 # has an insanity counter. passes to stare_down.
 def eye_room():
-    if skull_key == False:
+    eye_insanity = 0 # used to track insanity from performing non-stare related actions in the eye room
+
+    if skull_key not in inventory:
         print("Upon entering the room you see a giant, pulsating eye.")
         print("As it turns its gaze upon you, your mind starts to unravel.")
         print("(b)ack, (i)nventory?")
 
-        punc = input("> ").lower()
-        playerInput = punc.translate(string.maketrans("", ""), string.punctuation)
-        nextStep = playerInput.split()
+        playerInput = input("> ").lower()
 
-         eye_insanity
-
-        if "i" in nextStep:
+        if "i" in playerInput[0]:
             print(inventory)
             eye_insanity - + 1
             eye_room()
-        if "inventory" in nextStep:
-            print(inventory)
-            eye_insanity - + 1
-            eye_room()
-        if "item" in nextStep:
-            print(inventory)
-            eye_insanity - + 1
-            eye_room()
-        elif "flee" in nextStep:
+        elif "f" in playerInput[0]:
             start()
-        elif "back" in nextStep:
+        elif "b" in playerInput[0]:
             start()
-        elif "b" in nextStep:
-            start()
-        elif "stare" in nextStep:
+        elif "stare" in playerInput:
             stare_down()
         elif eye_insanity >= 3:
             print("The eye's intense gaze completely destabilizes your mind, disabling all body functions.")
@@ -321,7 +300,7 @@ def eye_room():
         else:
             eye_insanity += 1
             eye_room()
-    elif skull_key == True:
+    elif skull_key in inventory:
         print("This room is a dead end, so you head back.")
         start()
     else:
