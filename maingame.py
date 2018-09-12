@@ -5,7 +5,7 @@ import time
 # import string used to strip out punctuation
 import string
 
-# START GLOBALS
+# START S
 
 # makes golem room unrepeatable
 golem_already_entered = False
@@ -23,7 +23,7 @@ eye_insanity = 0
 skull_door = False
 
 # applies protection from the stair ghosts
-glitter_glow = False
+glitter_amulet = False
 
 # makes fairy encounter unrepeatable
 fairy = True
@@ -37,7 +37,7 @@ skull_lock = False
 # dark sign message
 default_death = "..........\n..........\nYour dark sign flares to life as you are prevented from reaching eternal rest.\n.........."
 
-# END GLOBALS
+# END S
 
 # START INVENTORY
 inventory = ["Dark Sign"]
@@ -51,14 +51,16 @@ def ghost_stairs():
     print("Stairs wind down as far as you can see.")
     print("Suddenly, everything is illuminated by an ethereal light.")
 
-    if glitter_glow == False:
+    if "Fairy Amulet"  in inventory:
+        print("Ghosts rush towards you, but are repelled by")
+        print("* ~ ~ ~ fairy's Blessing ~ ~ ~*")
+        great_kiln()
+
+    else:
         print("You are swarmed by vengeful ghosts")
         print("They tear you limb from limb.")
         dead(default_death)
-    elif glitter_glow == True:
-        print("Ghosts rush towards you, but are repeled by")
-        print("* ~ ~ ~ fairy's Blessing ~ ~ ~*")
-        great_kiln()
+
 
 
 # final room, ends game
@@ -87,7 +89,7 @@ def great_kiln():
 
 # mimic room before the mimic is moved
 def mimic_room():
-    global mimic_moved
+     mimic_moved
 
     if mimic_moved == True:
         mimic_room_moved()
@@ -175,9 +177,9 @@ def mimic_room_moved():
 
 # initial state of the bone room, needs to be searched
 def skull_room():
-    # noinspection PyGlobalUndefined
-    global skull_lock
-    global skull_door
+    # noinspection PyUndefined
+     skull_lock
+     skull_door
     print("This room has thousands of skulls stacked on dusty shelves and piled on the floor.")
 
     if skull_door == False:
@@ -215,9 +217,9 @@ def skull_room():
 
 
 # after searching the skull room, this is the provided state.  can unlock the door if skull_key == True
-# noinspection PyGlobalUndefined
+# noinspection PyUndefined
 def skull_lock():
-    global skull_lock
+     skull_lock
 
     print("You see a lock recessed in an ivory skull.")
     print("(b)ack")
@@ -296,8 +298,8 @@ def skull_door_unlocked():
 def glitter_room():
     print("You enter a room filled with glowing pink crystals.")
     print("Sliver and gold glitter rains continuously from the ceiling.")
-    global glitter_glow
-    global fairy
+     glitter_glow
+     fairy
 
     if fairy == True:
         print("A glowing fairy floats over head.")
@@ -360,7 +362,7 @@ def eye_room():
         playerInput = punc.translate(string.maketrans("", ""), string.punctuation)
         nextStep = playerInput.split()
 
-        global eye_insanity
+         eye_insanity
 
         if "i" in nextStep:
             print(inventory)
@@ -399,7 +401,7 @@ def eye_room():
 
 # has insanity counter and a stare counter.  can set skull_key == True and appends it to the player's inventory
 def stare_down():
-    global eye_stare
+     eye_stare
     print("You stare back defiantly, refusing to bend your gaze.")
     if eye_stare <= 0:
         print("You feel yourself slipping into nothingness...")
@@ -461,7 +463,7 @@ def stare_down():
         time.sleep(1)
         print("You find a skull shaped key!")
         print("This room is a dead end, so you head back.")
-        global skull_key
+         skull_key
         inventory.append("Skull Key")
         skull_key = True
         start()
@@ -481,7 +483,7 @@ def dead(default_death):
 def golem_room():
     print("In this dimly lit room there is a large lake.")
     print("A hideous creature approaches you from behind.")
-    global golem_already_entered
+     golem_already_entered
     if golem_already_entered == False:
         print("It screeches at you, 'IT ANSWERS THE RIDDLE OR WE EATS IT!")
         print("What do you do?")
@@ -522,7 +524,7 @@ def riddle():
         print("The creature sighs and says, '...correct.  We tells it a secret:")
         print("the treasure's password is MIMIC'")
         print("You quickly return the way you came.")
-        global golem_already_entered
+         golem_already_entered
         golem_already_entered = True
         start()
 
@@ -538,38 +540,20 @@ def start():
     There is are doors to your right, left, and forward, as well as stairs leading down.\n
     (l)eft, (f)orward, (r)ight, (s)tairs, (i)nventory?""")
 
-    punc = input("> ").lower()
-    playerInput = punc.translate(string.maketrans("", ""), string.punctuation)
-    nextStep = playerInput.split()
+    playerInput = input("> ").lower()
 
-    if "i" in nextStep:
+    if "i" in playerInput[0]:
         print(inventory)
         start()
-    elif "inventory" in nextStep:
-        print(inventory)
-        start()
-    elif "items" in nextStep:
-        print(inventory)
-        start()
-    elif "left" in nextStep:
+    elif "l" in playerInput[0]:
         mimic_room()
-    elif "l" in nextStep:
-        mimic_room()
-    elif "right" in nextStep:
+    elif "r" in playerInput[0]:
         eye_room()
-    elif "r" in nextStep:
-        eye_room()
-    elif "forward" in nextStep:
+    elif "f" in playerInput[0]:
         golem_room()
-    elif "f" in nextStep:
-        golem_room()
-    elif "down" in nextStep:
+    elif "d" in playerInput[0]:
         ghost_stairs()
-    elif "s" in nextStep:
-        ghost_stairs()
-    elif "stairs" in nextStep:
-        ghost_stairs()
-    elif "climb" in nextStep:
+    elif "s" in playerInput[0]:
         ghost_stairs()
     else:
         print("I don't understand.")
