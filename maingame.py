@@ -1,5 +1,4 @@
 # from sys import exit
-
 # import time used to delay when some lines are displayed
 import time
 # import string used to strip out punctuation
@@ -7,26 +6,16 @@ import string
 
 # makes golem room unrepeatable
 golem_already_entered = False
-# makes it so the player doesn't need to unlock the skull door every time the room is entered
-skull_lock_found = False
-# makes fairy encounter unrepeatable
-fairy = True
 # moves mimic away from the gold door in the mimic room, makes encounter unrepeatable
 global mimic_moved
 mimic_moved = False
-# used in giant eye puzzle in stare_down
-eye_stare = 0
 
 # dark sign message
-default_death = """..........\n
-..........\n
-Your dark sign flares to life as you are prevented from reaching eternal rest.\n
-.........."""
+default_death = "..........\n..........\nYour dark sign flares to life as you are prevented from reaching eternal rest.\n.........."
 
-inventory = ["Dark Sign"]
+inventory = ["Dark Sign"]  # currently implemented inventory items: "Dark Sign", "Skull Key", "Fairy Amulet", "Dance Scroll"
+status = ["eye_stare", "eye_insanity"]  # used to adjust states where adding an item to the inventory doesn't make sense
 
-
-# currently implemented inventory items: ""Dark Sign", "Skull Key", "Fairy Amulet", "Dance Scroll"
 
 # stairs from the start to the great kiln.  requires glitter_glow from fairy's room to traverse.
 def ghost_stairs():
@@ -51,12 +40,12 @@ def great_kiln():
 
     playerInput = input("> ").lower()
 
-    if "yes" in playerInput:
+    if "y" in playerInput[0]:
         print("In linking the fires you've condemned yourself to burn eternally...")
         print("but at least the Age of Dark has been prevented.")
         exit(0)
 
-    elif "no" in playerInput:
+    elif "no" in playerInput[0]:
         print("Ascending to become the Dark Lord, you usher in the Age of Dark!")
         print("Good for you I guess?")
         exit(0)
@@ -122,14 +111,9 @@ def mimic_room_moved():
         mimic_room_moved()
     elif "b" in playerInput[0]:
         start(golem_already_entered)
-    elif "d" in playerInput[0] and "Skull Key" in inventory:
+    elif "d" in playerInput[0] or "g" in playerInput[0] and "Skull Key" in inventory:
         skull_room()
-    elif "g" in playerInput[0] and "Skull Key" in inventory:
-        skull_room()
-    elif "d" in playerInput[0] and "Skull Key" not in inventory:
-        print("This door requires a key\n")
-        mimic_room_moved()
-    elif "g" in playerInput[0] and "Skull Key" not in inventory:
+    elif "d" in playerInput[0] or "g" in playerInput[0] and "Skull Key" not in inventory:
         print("This door requires a key\n")
         mimic_room_moved()
     else:
@@ -149,7 +133,7 @@ def skull_door_unlocked():
         glitter_room()
     elif "i" in playerInput[0]:
         print(inventory)
-        skull_room()
+        skull_door_unlocked()
     elif "b" in playerInput[0]:
         mimic_room()
     else:
@@ -162,7 +146,7 @@ def skull_room():
     print("This room has thousands of skulls stacked on dusty shelves and piled on the floor.")
     if "Dance Scroll" not in inventory:
         print("You think you see something shiny out of the corner of your eye.")
-        print("(b)ack")
+        print("(b)ack, (i)nventory")
 
         playerInput = input("> ").lower()
 
@@ -173,79 +157,63 @@ def skull_room():
             mimic_room()
         elif "search" in playerInput and "Dance Scroll" not in inventory:
             print("After some searching you find a lock embedded within a skull.")
-            print("You also find a scroll with the word 'DANCE' written on it.")
+            print("You find a scroll with a picture of Titania, Queen of the Fairies, and 'DANCE PARTY' written on it.")
             inventory.append("Dance Scroll")
-            skull_lock(skull_lock_found)
+            skull_lock()
         else:
             print("I don't understand.")
             skull_room()
-
-    elif "Dance Scroll" in inventory and "Skull Key" in inventory:
-        skull_door_unlocked()
     elif "Dance Scroll" in inventory and "Skull Key" not in inventory:
-        skull_lock(skull_lock_found)
+        skull_lock()
     else:
         print("program error is skull_room")
         mimic_room()
 
 
 # after searching the skull room, this is the provided state.  can unlock the door if "Skull Key" is in inventory
-def skull_lock(skull_lock_found):
+def skull_lock():
     print("You see a lock recessed in an ivory skull.")
-    print("(b)ack")
-
+    print("(b)ack, (i)nventory")
     playerInput = input("> ").lower()
 
     if "i" in playerInput[0]:
         print(inventory)
-        skull_lock(skull_lock_found)
+        skull_lock()
     elif "b" in playerInput[0]:
         mimic_room()
-    elif "unlock" in playerInput and "Skull Key" in inventory:
+    elif "unlock" in playerInput or "key" in playerInput and "Skull Key" in inventory:
         print("You insert the skull shaped key into the skull lock.")
         print("As soon as you turn the key the room begins to shake.")
         print("Skulls clatter to the ground revealing a large double door set within a polished bone frame.")
-        skull_lock = True
         skull_door_unlocked()
-        return skull_lock
-    elif "key" in next and skull_key == True:
-        print("You insert the skull shaped key into the skull lock.")
-        print("As soon as you turn the key the room begins to shake.")
-        print("Skulls clatter to the ground revealing a large double door set within a polished bone frame.")
-        skull_lock = True
-        skull_door_unlocked()
-        return skull_lock
-    elif "unlock" in next and skull_key not in inventory:
+    elif "unlock" in playerInput or "key" in playerInput and "Skull Key" not in inventory:
         print("You need the right key for this lock.")
-        skull_room()
-    elif skull_key == True and next != "unlock":
+        skull_lock()
+    elif "Skull Key" in inventory and playerInput is not "unlock":
         print("Do something with the key?")
-        skull_lock(skull_lock_found)
-    elif skull_key == False and next != "unlock":
-        print("I don't understand.")
-        skull_lock(skull_lock_found)
+        skull_lock()
     else:
         print("How did you get this error at the skull_lock?")
         skull_room()
 
 
 # initial state of the glitter room.  allows player to get the glitter_glow amulet. unrepeatable.
-def glitter_room(fairy):
+def glitter_room():
     print("You enter a room filled with glowing pink crystals.")
     print("Sliver and gold glitter rains continuously from the ceiling.")
 
-    if fairy is True:
+    if "Fairy Amulet" not in inventory:
         print("A glowing fairy floats over head.")
         print("As you turn to look at her, she sings out:")
         print("What is movement for the sake of joy?")
 
         playerInput = input("> ").lower()
-        uppercaseList = [playerInput[0:4]]
+        # uppercaseList = [playerInput[0:4]]
 
-        if "I" in uppercaseList:
+        if "i" in playerInput:
             print(inventory)
             glitter_room()
-        elif "DANC" in uppercaseList:
+        elif "dance" in playerInput:
             print("The fairy shoots pink glitter from every pore")
             print("She sings, 'You\'re shielded by my protective love.  Good luck!'")
             print("You receive a magical amulet!")
@@ -254,13 +222,12 @@ def glitter_room(fairy):
             print("******")
             time.sleep(1)
             print("******")
-            fairy = False
             start(golem_already_entered)
-        elif uppercaseList != "DANC":
+        elif "dance" not in playerInput:
             print("fairy sighs and quietly sings, '...so often disappointed'")
             print("She swoops down and splits your head open with her eye lasers.")
             dead(default_death)
-    elif fairy is False:
+    elif "Fairy Amulet" in inventory:
         print("The room is empty")
         print("(b)ack")
 
@@ -279,9 +246,7 @@ def glitter_room(fairy):
 
 
 # has an insanity counter. passes to stare_down.
-def eye_room(eye_stare):
-    eye_insanity = 0  # used to track insanity from performing non-stare related actions in the eye room
-
+def eye_room(eye_stare, eye_insanity):
     if "Skull Key" not in inventory:
         print("Upon entering the room you see a giant, pulsating eye.")
         print("As it turns its gaze upon you, your mind starts to unravel.")
@@ -292,7 +257,7 @@ def eye_room(eye_stare):
         if "i" in playerInput[0]:
             print(inventory)
             eye_insanity - + 1
-            eye_room(eye_stare)
+            eye_room(eye_stare, eye_insanity)
         elif "f" in playerInput[0]:
             start(golem_already_entered)
         elif "b" in playerInput[0]:
@@ -305,7 +270,7 @@ def eye_room(eye_stare):
             dead(default_death)
         else:
             eye_insanity += 1
-            eye_room()
+            eye_room(eye_stare, eye_insanity)
     elif "Skull Key" in inventory:
         print("This room is a dead end, so you head back.")
         start(golem_already_entered)
@@ -443,7 +408,7 @@ def start(golem_already_entered):
     elif "l" in playerInput[0]:
         mimic_room()
     elif "r" in playerInput[0]:
-        eye_room(eye_stare)
+        eye_room(eye_stare, eye_insanity)
     elif "f" in playerInput[0]:
         golem_room(golem_already_entered)
     elif "d" in playerInput[0]:
@@ -452,6 +417,7 @@ def start(golem_already_entered):
         ghost_stairs()
     elif "cheat" in playerInput:
         inventory.append("Skull Key")
+        start(golem_already_entered)
     else:
         print("I don't understand.")
         start(golem_already_entered)
