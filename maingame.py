@@ -1,20 +1,12 @@
-# from sys import exit
 # import time used to delay when some lines are displayed
 import time
-# import string used to strip out punctuation
-import string
-
-# makes golem room unrepeatable
-golem_already_entered = False
-# moves mimic away from the gold door in the mimic room, makes encounter unrepeatable
-global mimic_moved
-mimic_moved = False
 
 # dark sign message
 default_death = "..........\n..........\nYour dark sign flares to life as you are prevented from reaching eternal rest.\n.........."
 
-inventory = ["Dark Sign"]  # currently implemented inventory items: "Dark Sign", "Skull Key", "Fairy Amulet", "Dance Scroll"
-status = ["eye_stare", "eye_insanity"]  # used to adjust states where adding an item to the inventory doesn't make sense
+inventory = [
+    "Dark Sign"]  # currently implemented inventory items: "Dark Sign", "Skull Key", "Fairy Amulet", "Dance Scroll"
+status = []  # used to adjust states where adding an item to the inventory doesn't make sense
 
 
 # stairs from the start to the great kiln.  requires glitter_glow from fairy's room to traverse.
@@ -57,11 +49,10 @@ def great_kiln():
 
 # mimic room before the mimic is moved
 def mimic_room():
-    global mimic_moved
 
-    if mimic_moved is True:
+    if "mimic_moved" in status:
         mimic_room_moved()
-    elif mimic_moved is False:
+    elif "mimic_moved" not in status:
         print("There is a treasure chest.")
         print("It undoubtedly contains treasure.")
         print("The chest is blocking a golden door.")
@@ -69,15 +60,15 @@ def mimic_room():
 
         playerInput = input("> ").lower()
 
-        if "mimic" in playerInput and mimic_moved is False:
+        if "mimic" in playerInput and "mimic_moved" not in status:
             print("The mimic has moved from the door.  You can go through it now.")
-            mimic_moved = True
+            status.append("mimic_moved")
             mimic_room_moved()
         elif "i" in playerInput[0]:
             print(inventory)
             mimic_room()
         elif "b" in playerInput[0]:
-            start(golem_already_entered)
+            start()
         elif "treasure" in playerInput:
             print("Upon touching the treasure chest, you discover that it's a mimic.")
             print("Before you have a chance to react it devours you whole.")
@@ -110,7 +101,7 @@ def mimic_room_moved():
         print(inventory)
         mimic_room_moved()
     elif "b" in playerInput[0]:
-        start(golem_already_entered)
+        start()
     elif "d" in playerInput[0] or "g" in playerInput[0] and "Skull Key" in inventory:
         skull_room()
     elif "d" in playerInput[0] or "g" in playerInput[0] and "Skull Key" not in inventory:
@@ -222,7 +213,7 @@ def glitter_room():
             print("******")
             time.sleep(1)
             print("******")
-            start(golem_already_entered)
+            start()
         elif "dance" not in playerInput:
             print("fairy sighs and quietly sings, '...so often disappointed'")
             print("She swoops down and splits your head open with her eye lasers.")
@@ -246,8 +237,11 @@ def glitter_room():
 
 
 # has an insanity counter. passes to stare_down.
-def eye_room(eye_stare, eye_insanity):
-    if "Skull Key" not in inventory:
+def eye_room():
+    if "eye_stare" in status:
+        status.remove("eye_stare")
+        eye_room()
+    elif "Skull Key" not in inventory:
         print("Upon entering the room you see a giant, pulsating eye.")
         print("As it turns its gaze upon you, your mind starts to unravel.")
         print("(b)ack, (i)nventory?")
@@ -256,33 +250,89 @@ def eye_room(eye_stare, eye_insanity):
 
         if "i" in playerInput[0]:
             print(inventory)
-            eye_insanity - + 1
-            eye_room(eye_stare, eye_insanity)
+            if "eye_insanity" not in status:
+                status.append("eye_insanity")
+                eye_room()
+            elif "eye_insanity_2" not in status and "eye_insanity" in status:
+                status.append("eye_insanity_2")
+                eye_room()
+            elif "eye_insanity_2" in status:
+                print("The eye's intense gaze completely destabilizes your mind, disabling all body functions.")
+                print("After what seems like an eternity you suffocate to death.")
+                status.remove("eye_insanity")
+                status.remove("eye_insanity_2")
+                dead(default_death)
+            else:
+                print("How did you get this error in the eye_room?")
+                eye_room()
         elif "f" in playerInput[0]:
-            start(golem_already_entered)
+            start()
         elif "b" in playerInput[0]:
-            start(golem_already_entered)
+            start()
         elif "stare" in playerInput:
-            stare_down(eye_stare)
-        elif eye_insanity >= 3:
+            status.append("eye_stare")
+            stare_down()
+        elif "eye_insanity_2" in status:
             print("The eye's intense gaze completely destabilizes your mind, disabling all body functions.")
             print("After what seems like an eternity you suffocate to death.")
+            status.remove("eye_insanity")
+            status.remove("eye_insanity_2")
             dead(default_death)
         else:
-            eye_insanity += 1
-            eye_room(eye_stare, eye_insanity)
+            if "eye_insanity" not in status:
+                status.append("eye_insanity")
+                eye_room()
+            elif "eye_insanity_2" not in status and "eye_insanity" in status:
+                status.append("eye_insanity_2")
+                eye_room()
     elif "Skull Key" in inventory:
         print("This room is a dead end, so you head back.")
-        start(golem_already_entered)
+        start()
     else:
         print("How did you get this error entering the eye room?")
-        start(golem_already_entered)
+        start()
 
 
-# has insanity counter and a stare counter.  can append "Skull Key" to the player's inventory
-def stare_down(eye_stare):
+def stare_down():
+    print(status)
     print("You stare back defiantly, refusing to bend your gaze.")
-    if eye_stare <= 0:
+    if "eye_stare_3" in status:
+        print("The eye begins spinning rapidly.")
+        print("eventually the eye spins so fast that it flies from its harness and vanishes into the sky.")
+        time.sleep(1)
+        print("You find a skull shaped key!")
+        print("This room is a dead end, so you head back.")
+        inventory.append("Skull Key")
+        start()
+    elif "eye_stare_3" not in status and "eye_stare_2" in status:
+        print("Something twists in your mind...")
+        print(" ")
+        time.sleep(3)
+        print("Stare or flee?")
+
+        playerInput = input("> ").lower()
+        if "stare" in playerInput:
+            status.append("eye_stare_3")
+            stare_down()
+        elif "f" in playerInput[0] or "b" in playerInput[0]:
+            print("You flee back the way you came.")
+            start()
+        else:
+            print("Stare or flee?")
+            if "eye_insanity_2" not in status:
+                status.append("eye_insanity_2")
+                stare_down()
+            elif "eye_insanity" not in status:
+                status.append("eye_insanity")
+                stare_down()
+            elif "eye_insanity_2" in status:
+                print("The eye's intense gaze completely destabilizes your mind, disabling all body functions.")
+                print("After what seems like an eternity you suffocate to death.")
+                status.remove("eye_insanity")
+                status.remove("eye_insanity_2")
+                dead(default_death)
+            stare_down()
+    elif "eye_stare_2" not in status:
         print("You feel yourself slipping into nothingness...")
         print(" ")
         time.sleep(3)
@@ -291,70 +341,49 @@ def stare_down(eye_stare):
         playerInput = input("> ").lower()
 
         if "stare" in playerInput:
-            eye_stare += 1
-            stare_down(eye_stare)
-            return eye_stare
-        elif "flee" in playerInput:
-            print("You flee back the way you came.")
-            start(golem_already_entered)
-        elif "b" in playerInput[0]:
-            print("You head back the way you came.")
-        else:
-            "Stare or flee?"
+            status.append("eye_stare_2")
             stare_down()
-    elif eye_stare <= 1:
-        print("Something twists in your mind...")
-        print(" ")
-        time.sleep(3)
-        print("Stare or flee?")
-
-        playerInput = input("> ").lower()
-
-        if "stare" in playerInput:
-            eye_stare += 1
-            stare_down(eye_stare)
-            return eye_stare
-        elif "flee" in playerInput:
-            print("You flee back the way you came.")
-            start(golem_already_entered)
-        elif "b" in playerInput[0]:
+        elif "i" in playerInput[0]:
+            print(inventory)
+            stare_down()
+        elif "f" in playerInput[0] or "b" in playerInput[0]:
             print("You head back the way you came.")
+            start()
         else:
             print("Stare or flee?")
+            if "eye_insanity_2" not in status:
+                status.append("eye_insanity_2")
+            elif "eye_insanity" not in status:
+                status.append("eye_insanity")
+            elif "eye_insanity_2" in status:
+                print("The eye's intense gaze completely destabilizes your mind, disabling all body functions.")
+                print("After what seems like an eternity you suffocate to death.")
+                status.remove("eye_insanity")
+                status.remove("eye_insanity_2")
+                dead(default_death)
             stare_down()
-    elif eye_stare >= 2:
-        print("The eye begins spinning rapidly.")
-        print("eventually the eye spins so fast that it flies from its harness and vanishes into the sky.")
-        time.sleep(1)
-        print("You find a skull shaped key!")
-        print("This room is a dead end, so you head back.")
-        inventory.append("Skull Key")
-        start(golem_already_entered)
-    else:
-        print("How did you get this error in the eye room at the stare down?")
-        start(golem_already_entered)
 
 
 # handles player death
 def dead(default_death):
     time.sleep(3)
     print(default_death)
-    start(golem_already_entered)
+    start()
 
 
 # causes death on re-entry after riddle completed. passes to riddle
-def golem_room(golem_already_entered):
+def golem_room():
     print("In this dimly lit room there is a large lake.")
     print("A hideous creature approaches you from behind.")
 
-    if golem_already_entered is False:
+    if "golem_already_entered" in status:
         print("It screeches at you, 'IT ANSWERS THE RIDDLE OR WE EATS IT!")
         print("What do you do?")
 
         playerInput = input("> ").lower()
 
         if "r" in playerInput[0]:
-            riddle(golem_already_entered)
+            riddle()
         else:
             print("It chases you down and eats you. You're still alive at the beginning.")
             dead(default_death)
@@ -365,7 +394,7 @@ def golem_room(golem_already_entered):
 
 
 # if the riddle is answered gives the password to the mimic room
-def riddle(golem_already_entered):
+def riddle():
     print("What has roots as nobody sees...")
     print("...Is taller than trees...")
     print("...Up, up it goes...")
@@ -383,10 +412,8 @@ def riddle(golem_already_entered):
         print("The creature sighs and says, '...correct.  We tells it a secret:")
         print("the treasure's password is MIMIC'")
         print("You quickly return the way you came.")
-        inventory.append("Mimic Password")
-        golem_already_entered = True
-        start(golem_already_entered)
-        return golem_already_entered
+        status.append("golem_already_entered")
+        start()
 
     else:
         print("It screeches, 'Wrong!  NOW WE EATS IT!'")
@@ -395,7 +422,7 @@ def riddle(golem_already_entered):
 
 
 # starting area.  links eye, mimic, and golem rooms.  allows access to ghost stairs.  player returns here on death.
-def start(golem_already_entered):
+def start():
     print("You are in a dark room.")
     print("There is are doors to your right, left, and forward, as well as stairs leading down.")
     print("(l)eft, (f)orward, (r)ight, (s)tairs, (i)nventory?")
@@ -404,23 +431,23 @@ def start(golem_already_entered):
 
     if "i" in playerInput[0]:
         print(inventory)
-        start(golem_already_entered)
+        start()
     elif "l" in playerInput[0]:
         mimic_room()
     elif "r" in playerInput[0]:
-        eye_room(eye_stare, eye_insanity)
+        eye_room()
     elif "f" in playerInput[0]:
-        golem_room(golem_already_entered)
+        golem_room()
     elif "d" in playerInput[0]:
         ghost_stairs()
     elif "s" in playerInput[0]:
         ghost_stairs()
     elif "cheat" in playerInput:
         inventory.append("Skull Key")
-        start(golem_already_entered)
+        start()
     else:
         print("I don't understand.")
-        start(golem_already_entered)
+        start()
 
 
-start(golem_already_entered)
+start()
