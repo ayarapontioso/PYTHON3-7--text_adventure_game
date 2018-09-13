@@ -1,7 +1,8 @@
 # import time used to delay when some lines are displayed
 import time
 
-inventory = ["Dark Sign"]  # currently implemented inventory items: "Dark Sign", "Skull Key", "Fairy Amulet", "Dance Scroll"
+inventory = [
+    "Dark Sign"]  # currently implemented inventory items: "Dark Sign", "Skull Key", "Fairy Amulet", "Dance Scroll"
 status = []  # used to adjust states where adding an item to the inventory doesn't make sense
 
 
@@ -45,7 +46,6 @@ def great_kiln():
 
 # mimic room before the mimic is moved
 def mimic_room():
-
     if "mimic_moved" in status:
         mimic_room_moved()
     elif "mimic_moved" not in status:
@@ -363,7 +363,8 @@ def stare_down():
 # handles player death
 def dead():
     time.sleep(3)
-    print("..........\n..........\nYour dark sign flares to life as you are prevented from reaching eternal rest.\n..........")
+    print(
+        "..........\n..........\nYour dark sign flares to life as you are prevented from reaching eternal rest.\n..........")
     start()
 
 
