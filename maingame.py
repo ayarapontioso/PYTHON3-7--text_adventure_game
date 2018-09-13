@@ -1,11 +1,7 @@
 # import time used to delay when some lines are displayed
 import time
 
-# dark sign message
-default_death = "..........\n..........\nYour dark sign flares to life as you are prevented from reaching eternal rest.\n.........."
-
-inventory = [
-    "Dark Sign"]  # currently implemented inventory items: "Dark Sign", "Skull Key", "Fairy Amulet", "Dance Scroll"
+inventory = ["Dark Sign"]  # currently implemented inventory items: "Dark Sign", "Skull Key", "Fairy Amulet", "Dance Scroll"
 status = []  # used to adjust states where adding an item to the inventory doesn't make sense
 
 
@@ -22,7 +18,7 @@ def ghost_stairs():
     else:
         print("You are swarmed by vengeful ghosts")
         print("They tear you limb from limb.")
-        dead(default_death)
+        dead()
 
 
 # final room, ends game
@@ -72,15 +68,15 @@ def mimic_room():
         elif "treasure" in playerInput:
             print("Upon touching the treasure chest, you discover that it's a mimic.")
             print("Before you have a chance to react it devours you whole.")
-            dead(default_death)
+            dead()
         elif "chest" in playerInput:
             print("Upon touching the treasure chest, you discover that it's a mimic.")
             print("Before you have a chance to react it devours you whole.")
-            dead(default_death)
+            dead()
         elif "door" in playerInput:
             print("Upon touching the treasure chest, you discover that it's a mimic.")
             print("Before you have a chance to react it devours you whole.")
-            dead(default_death)
+            dead()
         else:
             print("I don't understand.")
             mimic_room()
@@ -217,7 +213,7 @@ def glitter_room():
         elif "dance" not in playerInput:
             print("fairy sighs and quietly sings, '...so often disappointed'")
             print("She swoops down and splits your head open with her eye lasers.")
-            dead(default_death)
+            dead()
     elif "Fairy Amulet" in inventory:
         print("The room is empty")
         print("(b)ack")
@@ -261,7 +257,7 @@ def eye_room():
                 print("After what seems like an eternity you suffocate to death.")
                 status.remove("eye_insanity")
                 status.remove("eye_insanity_2")
-                dead(default_death)
+                dead()
             else:
                 print("How did you get this error in the eye_room?")
                 eye_room()
@@ -277,7 +273,7 @@ def eye_room():
             print("After what seems like an eternity you suffocate to death.")
             status.remove("eye_insanity")
             status.remove("eye_insanity_2")
-            dead(default_death)
+            dead()
         else:
             if "eye_insanity" not in status:
                 status.append("eye_insanity")
@@ -330,7 +326,7 @@ def stare_down():
                 print("After what seems like an eternity you suffocate to death.")
                 status.remove("eye_insanity")
                 status.remove("eye_insanity_2")
-                dead(default_death)
+                dead()
             stare_down()
     elif "eye_stare_2" not in status:
         print("You feel yourself slipping into nothingness...")
@@ -360,14 +356,14 @@ def stare_down():
                 print("After what seems like an eternity you suffocate to death.")
                 status.remove("eye_insanity")
                 status.remove("eye_insanity_2")
-                dead(default_death)
+                dead()
             stare_down()
 
 
 # handles player death
-def dead(default_death):
+def dead():
     time.sleep(3)
-    print(default_death)
+    print("..........\n..........\nYour dark sign flares to life as you are prevented from reaching eternal rest.\n..........")
     start()
 
 
@@ -386,11 +382,11 @@ def golem_room():
             riddle()
         else:
             print("It chases you down and eats you. You're still alive at the beginning.")
-            dead(default_death)
+            dead()
     else:
         print("The creature screams, 'WE EATS IT ANYWAY!'")
         print("It chases you down and eats you. You're still alive at the beginning.")
-        dead(default_death)
+        dead()
 
 
 # if the riddle is answered gives the password to the mimic room
@@ -418,7 +414,7 @@ def riddle():
     else:
         print("It screeches, 'Wrong!  NOW WE EATS IT!'")
         print("It chases you down and eats you. You're still alive at the beginning.")
-        dead(default_death)
+        dead()
 
 
 # starting area.  links eye, mimic, and golem rooms.  allows access to ghost stairs.  player returns here on death.
